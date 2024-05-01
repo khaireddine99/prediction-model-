@@ -1,34 +1,24 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error
-import joblib
+from sklearn.metrics import mean_squared_error, r2_score
 
 # load the dataset
-data = pd.read_csv('cleaned_data2.csv')
+df = pd.read_csv("model training/data.csv")
 
-# Split into features and target variables
-features = data[['Temperature1', 'Temperature2', 'Temperature3', 
-                 'Light Intensity1', 'Light Intensity2', 'Light Intensity3']]
+# split the data and train the model
+X = df[['Temperature1', 'Light Intensity1', 'Temperature2', 'Light Intensity2']]  # Features
+y = df[['Typing Speed1 (words per minute)', 'Typing Speed2 (words per minute)']]  # Target variable
 
-target = data[['Typing Speed1 (words per minute)', 
-               'Typing Speed2 (words per minute)', 
-               'Typing Speed3 (words per minute)']]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# train the model
-X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.1, random_state=42)
 model = DecisionTreeRegressor(random_state=42)
 model.fit(X_train, y_train)
 
-# evaluate the model
+# test model performance
 y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
 print("Mean Squared Error:", mse)
-
-# prediction test
-new_data = pd.DataFrame([[22.5,22.5,22.5,200.0,200.0,200.0]], columns=features.columns)  # Example new data
-prediction = model.predict(new_data)
-print("Predicted Typing Speed:", prediction)
-
-# save the model 
-joblib.dump(model, 'decision_tree_model.joblib')
+print("R^2 Score:", r2)

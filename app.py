@@ -14,12 +14,10 @@ def Hello():
     if request.method == 'POST':
         temp1 = request.form['temperature1']
         temp2 = request.form['temperature2']
-        temp3 = request.form['temperature3']
         light1 = request.form['light1']
         light2 = request.form['light2']
-        light3 = request.form['light3']
 
-        context = get_predictions(temp1, temp2, temp3, light1, light2, light3)
+        context = get_predictions(temp1, temp2,light1, light2)
 
     # send the data to a value
     return render_template('index.html', context=context)
